@@ -75,7 +75,7 @@ struct XMLCoderElement: Equatable {
         stringValue = string
     }
 
-    mutating func append(element: XMLCoderElement, forKey key: String) {
+    mutating func append(element: XMLCoderElement) {
         elements.append(element)
         containsTextNodes = containsTextNodes || element.isTextNode
     }
@@ -98,6 +98,13 @@ struct XMLCoderElement: Equatable {
             elements.append(XMLCoderElement(cdataValue: string))
         }
         containsTextNodes = true
+    }
+
+    mutating func trimTextNodes() {
+        guard containsTextNodes else { return }
+        for idx in elements.indices {
+            elements[idx].stringValue = elements[idx].stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+        }
     }
 
     func transformToBoxTree() -> Box {
